@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Origin of Financial Precision | Meridian Bank of Zambia</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0b0d;
+            --bg-secondary: #0f1114;
+            --bg-tertiary: #15181c;
+            --accent-gold: #c9a227;
+            --accent-emerald: #00a86b;
+            --accent-cyan: #4a9eff;
+            --accent-amber: #d4a574;
+            --accent-blue: #5b7c99;
+            --text-primary: #ffffff;
+            --text-secondary: #a8b0bc;
+            --text-tertiary: #5a6270;
+            --glass-bg: rgba(20, 24, 30, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.04);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Ledger Texture Background */
+        .ledger-texture {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.015;
+            background-image: 
+                linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 100% 40px;
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent-gold), var(--accent-emerald));
+            z-index: 1000;
+            transform-origin: left;
+            transform: scaleX(0);
+        }
+
+        /* Timeline */
+        .timeline-container {
+            position: fixed;
+            left: 40px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .timeline-line {
+            width: 2px;
+            height: 150px;
+            background: linear-gradient(180deg, var(--accent-gold), var(--accent-emerald));
+            position: relative;
+            border-radius: 1px;
+        }
+
+        .timeline-marker {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: var(--accent-gold);
+            border-radius: 50%;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 0 10px var(--accent-gold);
+            transition: top 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .timeline-year {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            color: var(--text-tertiary);
+            letter-spacing: 2px;
+        }
+
+        .timeline-year.active {
+            color: var(--accent-gold);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            padding: 80px 40px;
+            background: radial-gradient(ellipse at center, rgba(201,162,39,0.04) 0%, transparent 60%);
+        }
+
+        .hero-content {
+            text-align: center;
+            max-width: 800px;
+            z-index: 10;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 100px;
+            font-size: 11px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--accent-gold);
+            margin-bottom: 40px;
+            backdrop-filter: blur(20px);
+        }
+
+        .hero-badge::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: var(--accent-gold);
+            border-radius: 50%;
+        }
+
+        .hero-title {
+            font-size: clamp(32px, 5vw, 64px);
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, #fff 0%, var(--accent-gold) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-role {
+            font-size: clamp(16px, 2vw, 24px);
+            font-weight: 400;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .hero-company {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            color: var(--accent-emerald);
+            letter-spacing: 2px;
+            margin-bottom: 16px;
+        }
+
+        .hero-meta {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--text-tertiary);
+            letter-spacing: 2px;
+        }
+
+        .hero-description {
+            max-width: 550px;
+            margin: 40px auto 0;
+            font-size: 15px;
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+
+        /* Principle Sections */
+        .principle-section {
+            min-height: 100vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            padding: 80px 60px;
+            overflow: hidden;
+        }
+
+        .principle-container {
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+        }
+
+        .principle-content {
+            z-index: 10;
+        }
+
+        .principle-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            letter-spacing: 4px;
+            color: var(--text-tertiary);
+            margin-bottom: 16px;
+        }
+
+        .principle-title {
+            font-size: clamp(28px, 3vw, 48px);
+            font-weight: 700;
+            margin-bottom: 40px;
+            line-height: 1.2;
+        }
+
+        .responsibility-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 24px;
+            backdrop-filter: blur(20px);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .responsibility-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 3px;
+            height: 100%;
+            background: var(--card-accent, var(--accent-emerald));
+            opacity: 0.5;
+        }
+
+        .responsibility-card:hover {
+            transform: translateX(6px);
+            border-color: var(--card-accent, var(--accent-emerald));
+        }
+
+        .responsibility-text {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        /* Visual Container */
+        .visual-container {
+            position: relative;
+            height: 450px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Glass Panel Base */
+        .glass-panel {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            backdrop-filter: blur(20px) saturate(120%);
+            box-shadow: 
+                0 0 0 1px rgba(255,255,255,0.02),
+                0 30px 60px rgba(0,0,0,0.3),
+                inset 0 1px 0 rgba(255,255,255,0.02);
+        }
+
+        /* Transition Panels */
+        .transition-panel {
+            min-height: 40vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .transition-arrow {
+            font-size: 32px;
+            color: var(--text-tertiary);
+            margin: 12px 0;
+            opacity: 0.3;
+        }
+
+        .transition-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--text-tertiary);
+        }
+
+        /* Principle 1: Transaction Ledger */
+        .ledger-panel {
+            width: 100%;
+            max-width: 400px;
+            padding: 24px;
+        }
+
+        .ledger-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .ledger-title {
+            font-size: 11px;
+            color: var(--text-tertiary);
+            letter-spacing: 2px;
+        }
+
+        .ledger-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--glass-border);
+            font-size: 12px;
+        }
+
+        .ledger-row:last-child {
+            border-bottom: none;
+        }
+
+        .ledger-type {
+            color: var(--text-secondary);
+        }
+
+        .ledger-amount {
+            color: var(--accent-emerald);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .verified-stamp {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            padding: 8px 16px;
+            background: rgba(0,168,107,0.1);
+            border: 1px solid var(--accent-emerald);
+            border-radius: 4px;
+            font-size: 10px;
+            color: var(--accent-emerald);
+            letter-spacing: 2px;
+            opacity: 0;
+        }
+
+        /* Principle 2: Cash Drawer */
+        .cash-panel {
+            width: 100%;
+            max-width: 380px;
+            padding: 24px;
+            text-align: center;
+        }
+
+        .vault-gauge {
+            margin: 20px 0;
+        }
+
+        .gauge-title {
+            font-size: 10px;
+            color: var(--text-tertiary);
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+        }
+
+        .gauge-bar {
+            height: 6px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .gauge-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--accent-gold), var(--accent-emerald));
+            border-radius: 3px;
+            transition: width 1.5s ease-out;
+        }
+
+        .recon-list {
+            margin-top: 24px;
+            text-align: left;
+        }
+
+        .recon-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 0;
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .recon-check {
+            width: 14px;
+            height: 14px;
+            border: 1px solid var(--glass-border);
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 9px;
+            color: var(--accent-emerald);
+            opacity: 0;
+        }
+
+        /* Principle 3: Customer Trust */
+        .trust-panel {
+            width: 100%;
+            max-width: 360px;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .trust-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 24px;
+            border-radius: 50%;
+            background: rgba(74,158,255,0.1);
+            border: 1px solid var(--accent-cyan);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+        }
+
+        .trust-flow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .flow-node {
+            padding: 10px 16px;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--glass-border);
+            border-radius: 6px;
+            font-size: 10px;
+            color: var(--text-secondary);
+            letter-spacing: 1px;
+        }
+
+        .flow-arrow {
+            color: var(--accent-cyan);
+            font-size: 14px;
+        }
+
+        /* Principle 4: Compliance */
+        .compliance-panel {
+            width: 100%;
+            max-width: 380px;
+            padding: 24px;
+        }
+
+        .lock-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 20px;
+            border-radius: 12px;
+            background: rgba(212,165,116,0.1);
+            border: 1px solid var(--accent-amber);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .compliance-list {
+            margin-top: 16px;
+        }
+
+        .compliance-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 0;
+            font-size: 11px;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .compliance-item:last-child {
+            border-bottom: none;
+        }
+
+        .compliance-check {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: rgba(212,165,116,0.2);
+            border: 1px solid var(--accent-amber);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 8px;
+            color: var(--accent-amber);
+            opacity: 0;
+        }
+
+        /* Principle 5: Operations */
+        .operations-panel {
+            width: 100%;
+            max-width: 420px;
+            height: 380px;
+            position: relative;
+        }
+
+        .workflow-diagram {
+            position: absolute;
+            top: 40px;
+            left: 40px;
+            right: 40px;
+            height: 200px;
+        }
+
+        .workflow-node {
+            position: absolute;
+            padding: 8px 14px;
+            background: var(--glass-bg);
+            border: 1px solid var(--accent-blue);
+            border-radius: 6px;
+            font-size: 9px;
+            color: var(--accent-blue);
+            letter-spacing: 1px;
+            opacity: 0;
+        }
+
+        .workflow-line {
+            position: absolute;
+            height: 1px;
+            background: linear-gradient(90deg, var(--accent-blue), transparent);
+            transform-origin: left center;
+            opacity: 0;
+        }
+
+        .branch-schematic {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 12px;
+        }
+
+        .branch-node {
+            padding: 10px 14px;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--glass-border);
+            border-radius: 6px;
+            font-size: 9px;
+            color: var(--text-tertiary);
+            letter-spacing: 1px;
+            opacity: 0;
+        }
+
+        /* Footer */
+        .footer {
+            min-height: 50vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 80px 40px;
+            background: radial-gradient(ellipse at center, rgba(201,162,39,0.03) 0%, transparent 70%);
+            text-align: center;
+        }
+
+        .footer-tagline {
+            font-size: clamp(24px, 3.5vw, 40px);
+            font-weight: 700;
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, #fff 0%, var(--accent-gold) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .footer-subtitle {
+            font-size: 14px;
+            color: var(--text-secondary);
+            max-width: 500px;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .timeline-container {
+                display: none;
+            }
+
+            .principle-container {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .principle-section {
+                padding: 60px 24px;
+            }
+
+            .visual-container {
+                height: 350px;
+                order: -1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero {
+                padding: 60px 24px;
+            }
+        }
+
+        /* Scroll Reveal */
+        .reveal-up { opacity: 0; transform: translateY(20px); }
+        .reveal-left { opacity: 0; transform: translateX(-20px); }
+        .reveal-right { opacity: 0; transform: translateX(20px); }
+        .reveal-scale { opacity: 0; transform: scale(0.95); }
+    </style>
+</head>
+<body>
+    <!-- Ledger Texture Background -->
+    <div class="ledger-texture"></div>
+
+    <!-- Progress Bar -->
+    <div class="progress-bar" id="progressBar"></div>
+
+    <!-- Timeline -->
+    <div class="timeline-container">
+        <div class="timeline-year" id="year1996">1996</div>
+        <div class="timeline-line">
+            <div class="timeline-marker" id="timelineMarker"></div>
+        </div>
+        <div class="timeline-year active" id="year1996b">1996</div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero" id="hero">
+        <div class="hero-content">
+            <div class="hero-badge reveal-scale">The Beginning</div>
+            <h1 class="hero-title reveal-up">The Origin of<br>Financial Precision</h1>
+            <p class="hero-role reveal-up">Bank Teller (Internship)</p>
+            <p class="hero-company reveal-up">Meridian Bank of Zambia — Livingstone, Zambia</p>
+            <p class="hero-meta reveal-up">05/10/1996 – 08/30/1996</p>
+            <p class="hero-description reveal-up">
+                Before analytics, before leadership, before architecture — there was precision. 
+                The foundational exposure to financial accountability that shaped everything that followed.
+            </p>
+        </div>
+    </section>
+
+    <!-- Principle 1: Transaction Accuracy -->
+    <section class="principle-section" id="principle1" style="background: radial-gradient(ellipse at 80% 50%, rgba(0,168,107,0.05) 0%, transparent 50%);">
+        <div class="principle-container">
+            <div class="principle-content">
+                <div class="principle-number reveal-left" style="color: var(--accent-emerald);">PRINCIPLE 01 / ACCURACY</div>
+                <h2 class="principle-title reveal-left" style="color: var(--accent-emerald);">Transaction<br>Precision</h2>
+                
+                <div class="responsibility-card reveal-up" style="--card-accent: var(--accent-emerald);">
+                    <p class="responsibility-text">Processed customer deposits, withdrawals, and payment transactions with strict adherence to banking accuracy standards and operational procedures.</p>
+                </div>
+            </div>
+            
+            <div class="visual-container">
+                <div class="glass-panel ledger-panel reveal-right">
+                    <div class="ledger-header">
+                        <span class="ledger-title">TRANSACTION LEDGER</span>
+                    </div>
+                    
+                    <div class="ledger-row">
+                        <span class="ledger-type">Deposit</span>
+                        <span class="ledger-amount">+ ZMW 5,240.00</span>
+                    </div>
+                    <div class="ledger-row">
+                        <span class="ledger-type">Withdrawal</span>
+                        <span class="ledger-amount">- ZMW 1,850.00</span>
+                    </div>
+                    <div class="ledger-row">
+                        <span class="ledger-type">Payment</span>
+                        <span class="ledger-amount">- ZMW 720.00</span>
+                    </div>
+                    <div class="ledger-row">
+                        <span class="ledger-type">Transfer</span>
+                        <span class="ledger-amount">+ ZMW 3,100.00</span>
+                    </div>
+                    
+                    <div class="verified-stamp" id="verifiedStamp">✓ VERIFIED</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Transition 1 → 2 -->
+    <section class="transition-panel" id="transition1">
+        <div class="transition-label reveal-up">Accuracy</div>
+        <div class="transition-arrow reveal-scale">↓</div>
+        <div class="transition-label reveal-up">Accountability</div>
+    </section>
+
+    <!-- Principle 2: Cash Handling & Vault Discipline -->
+    <section class="principle-section" id="principle2" style="background: radial-gradient(ellipse at 20% 50%, rgba(201,162,39,0.05) 0%, transparent 50%);">
+        <div class="principle-container">
+            <div class="principle-content">
+                <div class="principle-number reveal-left" style="color: var(--accent-gold);">PRINCIPLE 02 / ACCOUNTABILITY</div>
+                <h2 class="principle-title reveal-left" style="color: var(--accent-gold);">Cash Handling<br>& Vault Discipline</h2>
+                
+                <div class="responsibility-card reveal-up" style="--card-accent: var(--accent-gold);">
+                    <p class="responsibility-text">Assisted in maintaining balanced cash drawers and supported daily reconciliation processes to ensure vault accuracy and transactional integrity.</p>
+                </div>
+            </div>
+            
+            <div class="visual-container">
+                <div class="glass-panel cash-panel reveal-scale">
+                    <div class="vault-gauge">
+                        <div class="gauge-title">CASH DRAWER BALANCE</div>
+                        <div class="gauge-bar">
+                            <div class="gauge-fill" id="cashGauge"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="recon-list">
+                        <div class="recon-item">
+                            <div class="recon-check" id="recon1">✓</div>
+                            <span>Opening Balance Verified</span>
+                        </div>
+                        <div class="recon-item">
+                            <div class="recon-check" id="recon2">✓</div>
+                            <span>Transactions Recorded</span>
+                        </div>
+                        <div class="recon-item">
+                            <div class="recon-check" id="recon3">✓</div>
+                            <span>Cash Counted</span>
+                        </div>
+                        <div class="recon-item">
+                            <div class="recon-check" id="recon4">✓</div>
+                            <span>Closing Balance Matched</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Transition 2 → 3 -->
+    <section class="transition-panel" id="transition2">
+        <div class="transition-label reveal-up">Accountability</div>
+        <div class="transition-arrow reveal-scale">↓</div>
+        <div class="transition-label reveal-up">Customer Trust</div>
+    </section>
+
+    <!-- Principle 3: Customer Service & Professional Conduct -->
+    <section class="principle-section" id="principle3" style="background: radial-gradient(ellipse at center, rgba(74,158,255,0.05) 0%, transparent 50%);">
+        <div class="principle-container">
+            <div class="principle-content">
+                <div class="principle-number reveal-left" style="color: var(--accent-cyan);">PRINCIPLE 03 / TRUST</div>
+                <h2 class="principle-title reveal-left" style="color: var(--accent-cyan);">Customer Service<br>& Professional Conduct</h2>
+                
+                <div class="responsibility-card reveal-up" style="--card-accent: var(--accent-cyan);">
+                    <p class="responsibility-text">Delivered professional front-line banking service, assisting clients with account inquiries while maintaining confidentiality and adherence to service standards.</p>
+                </div>
+            </div>
+            
+            <div class="visual-container">
+                <div class="glass-panel trust-panel reveal-scale">
+                    <div class="trust-icon" id="trustIcon">🤝</div>
+                    
+                    <div class="trust-flow">
+                        <div class="flow-node">INQUIRY</div>
+                        <span class="flow-arrow">→</span>
+                        <div class="flow-node">ASSIST</div>
+                        <span class="flow-arrow">→</span>
+                        <div class="flow-node">RESOLVE</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Transition 3 → 4 -->
+    <section class="transition-panel" id="transition3">
+        <div class="transition-label reveal-up">Customer Trust</div>
+        <div class="transition-arrow reveal-scale">↓</div>
+        <div class="transition-label reveal-up">Compliance</div>
+    </section>
+
+    <!-- Principle 4: Compliance & Confidentiality -->
+    <section class="principle-section" id="principle4" style="background: radial-gradient(ellipse at 70% 50%, rgba(212,165,116,0.05) 0%, transparent 50%);">
+        <div class="principle-container">
+            <div class="principle-content">
+                <div class="principle-number reveal-left" style="color: var(--accent-amber);">PRINCIPLE 04 / COMPLIANCE</div>
+                <h2 class="principle-title reveal-left" style="color: var(--accent-amber);">Confidentiality<br>& Security Protocols</h2>
+                
+                <div class="responsibility-card reveal-up" style="--card-accent: var(--accent-amber);">
+                    <p class="responsibility-text">Followed established internal control procedures and security protocols to protect sensitive financial information and uphold regulatory compliance.</p>
+                </div>
+            </div>
+            
+            <div class="visual-container">
+                <div class="glass-panel compliance-panel reveal-scale">
+                    <div class="lock-icon" id="lockIcon">🔒</div>
+                    
+                    <div class="compliance-list">
+                        <div class="compliance-item">
+                            <div class="compliance-check" id="comp1">✓</div>
+                            <span>Internal Controls Followed</span>
+                        </div>
+                        <div class="compliance-item">
+                            <div class="compliance-check" id="comp2">✓</div>
+                            <span>Security Protocols Observed</span>
+                        </div>
+                        <div class="compliance-item">
+                            <div class="compliance-check" id="comp3">✓</div>
+                            <span>Information Protected</span>
+                        </div>
+                        <div class="compliance-item">
+                            <div class="compliance-check" id="comp4">✓</div>
+                            <span>Regulatory Standards Met</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Transition 4 → 5 -->
+    <section class="transition-panel" id="transition4">
+        <div class="transition-label reveal-up">Compliance</div>
+        <div class="transition-arrow reveal-scale">↓</div>
+        <div class="transition-label reveal-up">Operational Awareness</div>
+    </section>
+
+    <!-- Principle 5: Exposure to Banking Operations -->
+    <section class="principle-section" id="principle5" style="background: radial-gradient(ellipse at 30% 50%, rgba(91,124,153,0.05) 0%, transparent 50%);">
+        <div class="principle-container">
+            <div class="principle-content">
+                <div class="principle-number reveal-left" style="color: var(--accent-blue);">PRINCIPLE 05 / OPERATIONS</div>
+                <h2 class="principle-title reveal-left" style="color: var(--accent-blue);">Banking Operations<br>& Institutional Systems</h2>
+                
+                <div class="responsibility-card reveal-up" style="--card-accent: var(--accent-blue);">
+                    <p class="responsibility-text">Gained foundational exposure to branch workflow processes, transaction systems, and operational coordination within a structured financial institution environment.</p>
+                </div>
+            </div>
+            
+            <div class="visual-container">
+                <div class="operations-panel reveal-scale">
+                    <div class="workflow-diagram" id="workflowDiagram">
+                        <!-- Workflow nodes added by JS -->
+                    </div>
+                    
+                    <div class="branch-schematic" id="branchSchematic">
+                        <div class="branch-node">TELLER</div>
+                        <div class="branch-node">VAULT</div>
+                        <div class="branch-node">MANAGER</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer" id="footer">
+        <h2 class="footer-tagline reveal-up">Before analytics, before leadership,<br>before architecture — there was precision.</h2>
+        <p class="footer-subtitle reveal-up">Meridian Bank of Zambia — Bank Teller Internship — 1996</p>
+    </footer>
+
+    <script>
+        // Register GSAP plugins
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Progress Bar
+        gsap.to('#progressBar', {
+            scaleX: 1,
+            ease: 'none',
+            scrollTrigger: {
+                trigger: 'body',
+                start: 'top top',
+                end: 'bottom bottom',
+                scrub: 0.3
+            }
+        });
+
+        // Timeline Marker
+        gsap.to('#timelineMarker', {
+            top: '100%',
+            ease: 'none',
+            scrollTrigger: {
+                trigger: 'body',
+                start: 'top top',
+                end: 'bottom bottom',
+                scrub: 0.3
+            }
+        });
+
+        // Hero Animations (subtle)
+        gsap.timeline({ delay: 0.3 })
+            .to('.hero-badge', { opacity: 1, scale: 1, duration: 0.8, ease: 'power2.out' })
+            .to('.hero-title', { opacity: 1, y: 0, duration: 1, ease: 'power2.out' }, '-=0.4')
+            .to('.hero-role', { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' }, '-=0.6')
+            .to('.hero-company', { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' }, '-=0.5')
+            .to('.hero-meta', { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' }, '-=0.4')
+            .to('.hero-description', { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' }, '-=0.3');
+
+        // Principle 1: Verified Stamp
+        ScrollTrigger.create({
+            trigger: '#principle1',
+            start: 'top 60%',
+            onEnter: () => {
+                gsap.to('#verifiedStamp', {
+                    opacity: 1,
+                    scale: 1,
+                    duration: 0.6,
+                    delay: 0.8,
+                    ease: 'power2.out'
+                });
+            },
+            once: true
+        });
+
+        // Principle 2: Cash Gauge & Reconciliation
+        ScrollTrigger.create({
+            trigger: '#principle2',
+            start: 'top 60%',
+            onEnter: () => {
+                gsap.to('#cashGauge', {
+                    width: '100%',
+                    duration: 1.5,
+                    ease: 'power2.out'
+                });
+
+                document.querySelectorAll('.recon-check').forEach((check, i) => {
+                    gsap.to(check, {
+                        opacity: 1,
+                        duration: 0.3,
+                        delay: 0.8 + i * 0.2,
+                        ease: 'power2.out'
+                    });
+                });
+            },
+            once: true
+        });
+
+        // Principle 3: Trust Icon Glow
+        ScrollTrigger.create({
+            trigger: '#principle3',
+            start: 'top 60%',
+            onEnter: () => {
+                gsap.to('#trustIcon', {
+                    boxShadow: '0 0 30px rgba(74,158,255,0.3)',
+                    duration: 1,
+                    ease: 'power2.out'
+                });
+            },
+            once: true
+        });
+
+        // Principle 4: Lock & Compliance
+        ScrollTrigger.create({
+            trigger: '#principle4',
+            start: 'top 60%',
+            onEnter: () => {
+                gsap.to('#lockIcon', {
+                    scale: 1.05,
+                    duration: 0.5,
+                    yoyo: true,
+                    repeat: 1,
+                    ease: 'power2.inOut'
+                });
+
+                document.querySelectorAll('.compliance-check').forEach((check, i) => {
+                    gsap.to(check, {
+                        opacity: 1,
+                        duration: 0.3,
+                        delay: 0.6 + i * 0.15,
+                        ease: 'power2.out'
+                    });
+                });
+            },
+            once: true
+        });
+
+        // Principle 5: Workflow Diagram
+        ScrollTrigger.create({
+            trigger: '#principle5',
+            start: 'top 60%',
+            onEnter: () => {
+                const workflowDiagram = document.getElementById('workflowDiagram');
+                
+                const nodes = [
+                    { label: 'CUSTOMER', x: 20, y: 20 },
+                    { label: 'TRANSACTION', x: 140, y: 20 },
+                    { label: 'SYSTEM', x: 260, y: 20 },
+                    { label: 'RECORD', x: 80, y: 100 },
+                    { label: 'VERIFY', x: 200, y: 100 }
+                ];
+
+                nodes.forEach((node, i) => {
+                    const nodeEl = document.createElement('div');
+                    nodeEl.className = 'workflow-node';
+                    nodeEl.textContent = node.label;
+                    nodeEl.style.left = node.x + 'px';
+                    nodeEl.style.top = node.y + 'px';
+                    workflowDiagram.appendChild(nodeEl);
+
+                    gsap.to(nodeEl, {
+                        opacity: 1,
+                        duration: 0.4,
+                        delay: i * 0.15,
+                        ease: 'power2.out'
+                    });
+                });
+
+                const connections = [
+                    { from: 0, to: 1 }, { from: 1, to: 2 },
+                    { from: 1, to: 3 }, { from: 3, to: 4 }
+                ];
+
+                connections.forEach((conn, i) => {
+                    const from = nodes[conn.from];
+                    const to = nodes[conn.to];
+                    const line = document.createElement('div');
+                    line.className = 'workflow-line';
+                    const length = Math.sqrt(Math.pow(to.x - from.x, 2) + Math.pow(to.y - from.y, 2));
+                    const angle = Math.atan2(to.y - from.y, to.x - from.x) * 180 / Math.PI;
+                    
+                    line.style.width = length + 'px';
+                    line.style.left = (from.x + 40) + 'px';
+                    line.style.top = (from.y + 12) + 'px';
+                    line.style.transform = `rotate(${angle}deg)`;
+                    workflowDiagram.appendChild(line);
+
+                    gsap.to(line, {
+                        opacity: 1,
+                        duration: 0.3,
+                        delay: 0.8 + i * 0.1
+                    });
+                });
+
+                document.querySelectorAll('.branch-node').forEach((node, i) => {
+                    gsap.to(node, {
+                        opacity: 1,
+                        duration: 0.4,
+                        delay: 1.2 + i * 0.1,
+                        ease: 'power2.out'
+                    });
+                });
+            },
+            once: true
+        });
+
+        // Reveal animations (subtle)
+        const revealElements = document.querySelectorAll('.reveal-up, .reveal-left, .reveal-right, .reveal-scale');
+        
+        revealElements.forEach(el => {
+            gsap.set(el, { opacity: 0 });
+            
+            let fromVars = { opacity: 0 };
+            if (el.classList.contains('reveal-up')) fromVars.y = 20;
+            if (el.classList.contains('reveal-left')) fromVars.x = -20;
+            if (el.classList.contains('reveal-right')) fromVars.x = 20;
+            if (el.classList.contains('reveal-scale')) fromVars.scale = 0.95;
+
+            gsap.to(el, {
+                ...fromVars,
+                opacity: 1,
+                duration: 0.7,
+                ease: 'power2.out',
+                scrollTrigger: {
+                    trigger: el,
+                    start: 'top 85%',
+                    toggleActions: 'play none none none'
+                }
+            });
+        });
+
+        // Transition panels
+        document.querySelectorAll('.transition-panel').forEach(panel => {
+            gsap.from(panel.querySelectorAll('.reveal-up, .reveal-scale'), {
+                y: 15,
+                opacity: 0,
+                duration: 0.5,
+                stagger: 0.1,
+                scrollTrigger: {
+                    trigger: panel,
+                    start: 'top 80%',
+                    toggleActions: 'play none none none'
+                }
+            });
+        });
+
+        // Footer
+        gsap.from('.footer-tagline, .footer-subtitle', {
+            y: 20,
+            opacity: 0,
+            duration: 0.7,
+            stagger: 0.15,
+            scrollTrigger: {
+                trigger: '#footer',
+                start: 'top 80%',
+                toggleActions: 'play none none none'
+            }
+        });
+    </script>
+</body>
+</html>
